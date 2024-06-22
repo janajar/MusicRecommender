@@ -6,7 +6,7 @@ function Header() {
     <header className='header'>
       <img src={logo} alt="TikTok Studio Logo" style={{ height: '50px', marginRight: '10px' }} />
       <h1>
-        TikTok Studio
+        TikTok Engagement Studio
       </h1>
     </header>
   );

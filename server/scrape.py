@@ -3,6 +3,10 @@ from math import log
 import asyncio
 from aiohttp import ClientSession
 
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+from selenium.webdriver.common.keys import Keys
+
 def personalized_recommendations(hashtags):
     recommendations = []
     ms_token = asyncio.run(get_ms_token())
@@ -45,3 +49,15 @@ def popularity_score(video):
     + 0.05 * log(video.stats["collectCount"] + 1)
 
     return score
+
+def webscraper():
+    driver = webdriver.Chrome()
+    # Open a website
+    driver.get("http://www.google.com")
+    # Print the title of the page
+    print(driver.title)
+    # Close the browser
+    driver.quit()
+
+
+

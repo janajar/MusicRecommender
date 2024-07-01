@@ -51,15 +51,7 @@ app.post('/api/upload', upload.single('video'), async (req, res) => {
                 console.error('Python script exited with code:', code);
                 return res.status(500).json({ message: 'Failed to analyze video' });
             }
-            const frames = output.split('\n').filter(line => line.startsWith('data:image')).map(line => line.trim());
-
-            // Combine frames into a single prompt for OpenAI analysis
-            const combinedFramesPrompt = `Based on the following video frames, suggest 5 possible hashtags for a TikTok video:\n\n${frames.join('\n')}`;
-
-            // Send combined prompt to OpenAI for analysis
-            const hashtags = await analyzeVideoWithOpenAI(combinedFramesPrompt);
-
-            res.json({ hashtags: hashtags });
+            console.log(output)
         });
     } catch (error) {
         console.error('Error processing video:', error.response ? error.response.data : error.message);
@@ -68,29 +60,6 @@ app.post('/api/upload', upload.single('video'), async (req, res) => {
         }
     }
 });
-
-const analyzeVideoWithOpenAI = async (prompt) => {
-    try {
-        const response = await axios.post('https://api.openai.com/v1/engines/davinci-codex/completions', {
-            prompt: prompt,
-            max_tokens: 100,
-            temperature: 0.5,
-            n: 1,
-            stop: null
-        }, {
-            headers: {
-                'Authorization': `Bearer ${OPENAI_API_KEY}`,
-                'Content-Type': 'application/json',
-            }
-        });
-
-        const hashtags = response.data.choices[0].text.trim().split('\n').map(tag => tag.replace(/^#/, '').trim());
-        return hashtags;
-    } catch (error) {
-        console.error('Error analyzing video with OpenAI:', error.message);
-        return [];
-    }
-};
 
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);

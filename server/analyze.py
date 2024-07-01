@@ -1,12 +1,16 @@
-from IPython.display import display, Image, Audio
-import cv2  # We're using OpenCV to read video, to install !pip install opencv-python
+import cv2
 import base64
 import os
 import sys
-import numpy as np
 import tempfile
+import time
+from dotenv import load_dotenv
+from openai import OpenAI
+import numpy as np
+from PIL import Image
+from io import BytesIO
 
-def analyze_video(video_stream):
+def extract_frames(video_stream, spf=2):
     try:
         # Create a temporary file to save the video stream
         with tempfile.NamedTemporaryFile(delete=False, suffix=".mp4") as tmpfile:
@@ -18,27 +22,71 @@ def analyze_video(video_stream):
         if not video.isOpened():
             raise ValueError("Could not open the video file")
 
-        base64Frames = []
-        while video.isOpened():
+        total_frames = int(video.get(cv2.CAP_PROP_FRAME_COUNT))
+        fps = video.get(cv2.CAP_PROP_FPS)
+        next_frame = int(fps * spf)
+
+        curr_frame = 0
+        frames = []
+        while curr_frame < total_frames - 1:
+            video.set(cv2.CAP_PROP_POS_FRAMES, curr_frame)
             success, frame = video.read()
             if not success:
                 break
-            _, buffer = cv2.imencode(".jpg", frame)
-            base64Frames.append(base64.b64encode(buffer).decode("utf-8"))
+            frames.append(frame)
+            curr_frame += next_frame
 
         video.release()
         os.remove(tmpfile_path)
-        return base64Frames
+        return frames
 
     except Exception as e:
         print(f"An error occurred: {e}")
         return []
 
+def analyze_frame(frame):
+    # Encode the frame in its original color format
+    _, buffer = cv2.imencode(".jpg", frame)
+    frame_base64 = base64.b64encode(buffer).decode("utf-8")
+    return frame_base64
+
+def generate_summary(frames_analysis):
+    client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY", "<your OpenAI API key if not set as env var>"))
+    # Create the prompt with all frames
+    prompt_content = "This is a TikTok video uploaded by a user. Give me five hashtags that relate to the video the most.\n\n"
+    for frame in frames_analysis[0::50]:  # Adjust the slicing as needed
+        prompt_content += f"![frame](data:image/jpeg;base64,{frame})\n"
+    
+    PROMPT_MESSAGES = [
+        {
+            "role": "user",
+            "content": prompt_content
+        }
+    ]
+    
+    params = {
+        "model": "gpt-4o",
+        "messages": PROMPT_MESSAGES,
+        "max_tokens": 200,
+    }
+
+    result = client.chat.completions.create(**params)
+    print(result.choices[0].message.content)
+
 if __name__ == "__main__":
     try:
+        load_dotenv()
+        
+        # Assuming video_stream is provided via stdin for this example
         video_stream = sys.stdin.buffer
-        frames = analyze_video(video_stream)
-        for frame in frames:
-            print(f"data:image/jpeg;base64,{frame}")
+        frames = extract_frames(video_stream)
+
+        if frames:
+            frames_analysis = [analyze_frame(frame) for frame in frames]
+            summary = generate_summary(frames_analysis)
+            print("Summary:", summary)
+        else:
+            print("No frames extracted from the video.")
+
     except Exception as e:
         print(f"An error occurred in the main block: {e}")

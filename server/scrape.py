@@ -2,10 +2,8 @@ from TikTokApi import TikTokApi
 from math import log
 import asyncio
 from aiohttp import ClientSession
-
 from selenium import webdriver
 from selenium.webdriver.common.by import By
-from selenium.webdriver.common.keys import Keys
 
 def personalized_recommendations(hashtags):
     recommendations = []
@@ -21,8 +19,20 @@ def personalized_recommendations(hashtags):
             author = recommendation.author.username if not hasattr(recommendation.sound, 'author') else recommendation.sound.author
             sounds.append({"title":recommendation.sound.title, "author":author, "url":recommendation.sound.play_url})
 
-        if len(sounds) == 10:
+        if len(sounds) == 5:
             break
+    return sounds
+
+def trending_sounds():
+    options = webdriver.ChromeOptions()
+    options.add_experimental_option("detach", True)
+    driver = webdriver.Chrome(options=options)
+    driver.get("https://ads.tiktok.com/business/creativecenter/inspiration/popular/music/pc/en")
+    driver.implicitly_wait(10) # waiting for site to load
+
+    load_sounds(driver)
+    sounds = pull_sounds(driver)
+    driver.quit()
     return sounds
 
 async def get_ms_token():
@@ -50,14 +60,31 @@ def popularity_score(video):
 
     return score
 
-def webscraper():
-    driver = webdriver.Chrome()
-    # Open a website
-    driver.get("http://www.google.com")
-    # Print the title of the page
-    print(driver.title)
-    # Close the browser
-    driver.quit()
+def load_sounds(driver):
+    # click on songs button to ensure songs load
+    driver.find_element(By.XPATH, '//*[@id="ccContentContainer"]/div[2]/div/div[1]/div[2]/div[1]/span').click()
+    driver.implicitly_wait(10)
+
+    # view more songs
+    driver.find_element(By.XPATH, '//*[@id="ccContentContainer"]/div[2]/div/div[2]/div[2]/div/div[1]/div').click()
+    driver.implicitly_wait(10)
+
+def pull_sounds(driver):
+    sound_list_wrapper = driver.find_element(By.XPATH, '//*[@id="ccContentContainer"]/div[2]/div/div[2]/div[1]')
+    # sound_cards = sound_list_wrapper.find_elements(By.CLASS_NAME, 'CommonDataList_cardWrapper__kHTJP index-mobile_cardWrapper__Z2o_q')
+    
+    # sounds = []
+    # for sound_card in sound_cards:
+    #     title = sound_card.find_element(By.CLASS_NAME, 'ItemCard_musicName__2znhM index-mobile_musicName__4Srx_').text
+    #     author = sound_card.find_element(By.CLASS_NAME, 'ItemCard_autherName__gdrue index-mobile_autherName__DmQfn').text
+    #     sounds.append({"title":title, "author":author})
+    # return sounds
+    # child_elements = sound_list_wrapper.find_elements(By.XPATH, './*')
+    # for child in child_elements:
+    #     class_name = child.get_attribute('class')
+    #     text = child.text
+    #     print(f'Class: {class_name}, Text: {text}')
+    # return driver.find_element(By.XPATH, '//*[@id="ccContentContainer"]/div[2]/div/div[2]/div[1]/div[1]/div/div/div[2]/div[2]/div[1]/span').text
 
 
 

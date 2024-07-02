@@ -3,7 +3,7 @@
 .header {
   display: flex;
   align-items: center;
-  background-color: #000; 
+  background-color: #000000; 
   padding: 20px;
   z-index: 2;
 }

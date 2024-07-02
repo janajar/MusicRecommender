@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import Header from './Header.js';
-import vidButton from './img/vid-button.svg';
+import vidButton from './img/vid-button.svg'; // Adjusted file extension
 import Confetti from './Confetti';
 import './App.css';
 
@@ -8,6 +8,7 @@ function App() {
   const [dragging, setDragging] = useState(false);
   const [loading, setLoading] = useState(false);
   const [videoSrc, setVideoSrc] = useState(null);
+  const [videoUploaded, setVideoUploaded] = useState(false);
 
   const handleDragEnter = (e) => {
     e.preventDefault();
@@ -39,8 +40,8 @@ function App() {
     setTimeout(() => {
       setVideoSrc(videoURL);
       setLoading(false);
+      setVideoUploaded(true);
     }, 2000); // Simulating loading delay
-
   };
 
   return (
@@ -55,19 +56,30 @@ function App() {
           onDragOver={handleDragOver}
           onDrop={handleDrop}
         >
-          <img 
-            src= {vidButton} 
-            alt="Upload Button" 
-            style={{ height: '400px', width: '230px' }} 
-            className={dragging ? 'button-shift' : ''}
-          />
-          {loading ? (
-            <p>Loading...</p>
-          ) : videoSrc ? (
-            <video controls width="280" height="400" src={videoSrc}></video>
-          ) : (
-            <p>Drag video here</p>
-          )}
+          <div className={`upload-container ${videoUploaded ? 'button-shift' : ''}`}>
+            <img 
+              src={vidButton} 
+              alt="Upload Button" 
+              style={{ height: '800px', width: '530px' }} 
+              className="vid-button"
+            />
+            {loading ? (
+              <p>Loading...</p>
+            ) : videoSrc ? (
+              <div className="video-container">
+                <video
+                  src={videoSrc}
+                  className="video-preview"
+                  autoPlay
+                  loop
+                  muted
+                  playsInline
+                ></video>
+              </div>
+            ) : (
+              <p>Drag video here</p>
+            )}
+          </div>
         </div>
       </div>
     </div>

@@ -53,25 +53,20 @@ def analyze_frame(frame):
 def generate_summary(frames_analysis):
     client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY", "<your OpenAI API key if not set as env var>"))
     # Create the prompt with all frames
-    prompt_content = "This is a TikTok video uploaded by a user. Give me five hashtags that relate to the video the most.\n\n"
-    for frame in frames_analysis[0::50]:  # Adjust the slicing as needed
-        prompt_content += f"![frame](data:image/jpeg;base64,{frame})\n"
-    
-    PROMPT_MESSAGES = [
-        {
-            "role": "user",
-            "content": prompt_content
-        }
-    ]
-    
-    params = {
-        "model": "gpt-4o",
-        "messages": PROMPT_MESSAGES,
-        "max_tokens": 200,
+    response = client.chat.completions.create(
+    model="gpt-4o",
+    messages=[
+    {"role": "system", "content": "You are generating hashtags for a TikTok video, generate 5 total"},
+    {"role": "user", "content": [
+        "These are the frames from the video.",
+        *map(lambda x: {"type": "image_url",
+                        "image_url": {"url": f'data:image/jpg;base64,{x}', "detail": "low"}}, frames_analysis)
+        ],
     }
-
-    result = client.chat.completions.create(**params)
-    print(result.choices[0].message.content)
+    ],
+    temperature=0,
+    )
+    print(response.choices[0].message.content)
 
 if __name__ == "__main__":
     try:

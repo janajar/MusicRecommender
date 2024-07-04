@@ -8,6 +8,7 @@ require('dotenv').config();
 const app = express();
 const PORT = process.env.PORT || 3001;
 const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
+const FLASK_SERVER_URL = 'http://localhost:5000/recommend-music';
 
 if (!OPENAI_API_KEY) {
     console.error('OpenAI API key is not set in environment variables.');
@@ -51,7 +52,16 @@ app.post('/api/upload', upload.single('video'), async (req, res) => {
                 console.error('Python script exited with code:', code);
                 return res.status(500).json({ message: 'Failed to analyze video' });
             }
-            console.log(output)
+            console.log('Python script output:', output);
+
+            try {
+                const response = await axios.post(FLASK_SERVER_URL, { output: output });
+                console.log('Response from Flask server:', response.data);
+                res.json(response.data);
+            } catch (error) {
+                console.error('Error sending data to Flask server:', error.response ? error.response.data : error.message);
+                res.status(500).json({ message: 'Failed to send data to Flask server', error: error.message });
+            }
         });
     } catch (error) {
         console.error('Error processing video:', error.response ? error.response.data : error.message);

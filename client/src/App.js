@@ -1,10 +1,10 @@
-import React, {useState} from 'react'
-import Header from './Header.js'
-import Confetti from './Confetti'
-import './App.css'
+import React, { useState } from 'react';
+import axios from 'axios';
+import Header from './Header.js';
+import Confetti from './Confetti';
+import './App.css';
 
 function App() {
-  
   const [dragging, setDragging] = useState(false);
   const [loading, setLoading] = useState(false);
   const [videoSrc, setVideoSrc] = useState(null);
@@ -36,12 +36,26 @@ function App() {
     const videoFile = files[0];
     const videoURL = URL.createObjectURL(videoFile);
 
-    setTimeout(() => {
-      setVideoSrc(videoURL);
-      setLoading(false);
-    }, 2000);
-  };
+    setVideoSrc(videoURL);
 
+    const formData = new FormData();
+    formData.append('video', videoFile);
+
+    axios.post('/api/upload', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    })
+    .then(response => {
+      console.log('File uploaded successfully:', response.data);
+    })
+    .catch(error => {
+      console.error('Error uploading file:', error);
+    })
+    .finally(() => {
+      setLoading(false);
+    });
+  };
 
   return (
     <div>
@@ -70,4 +84,4 @@ function App() {
   );
 }
 
-export default App
+export default App;

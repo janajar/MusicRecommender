@@ -4,6 +4,9 @@ import asyncio
 from aiohttp import ClientSession
 from selenium import webdriver
 from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+import time
 
 def personalized_recommendations(hashtags):
     recommendations = []
@@ -17,23 +20,58 @@ def personalized_recommendations(hashtags):
     for recommendation in recommendations:
         if hasattr(recommendation.sound, 'play_url'):
             author = recommendation.author.username if not hasattr(recommendation.sound, 'author') else recommendation.sound.author
-            sounds.append({"title":recommendation.sound.title, "author":author, "url":recommendation.sound.play_url})
+            sounds.append({"title":recommendation.sound.title, "auxwthor":author, "url":recommendation.sound.play_url})
 
         if len(sounds) == 5:
             break
     return sounds
+
 
 def trending_sounds():
     options = webdriver.ChromeOptions()
     options.add_experimental_option("detach", True)
     driver = webdriver.Chrome(options=options)
     driver.get("https://ads.tiktok.com/business/creativecenter/inspiration/popular/music/pc/en")
-    driver.implicitly_wait(10) # waiting for site to load
 
-    load_sounds(driver)
-    sounds = pull_sounds(driver)
-    driver.quit()
-    return sounds
+    try:
+
+        driver.find_element(By.XPATH, '//*[@id="ccContentContainer"]/div[2]/div/div[1]/div[2]/div[1]/span').click()
+        driver.implicitly_wait(10)
+
+        # View more button click
+        view_more_button = WebDriverWait(driver, 10).until(
+            EC.element_to_be_clickable((By.XPATH, '//*[@id="ccContentContainer"]/div[2]/div/div[2]/div[2]/div/div[1]/div'))
+        )
+        view_more_button.click()
+
+        time.sleep(3)
+
+        # Wait until elements with music names are present
+        music_name_elements = WebDriverWait(driver, 10).until(EC.presence_of_all_elements_located((By.CLASS_NAME, 'ItemCard_musicName__2znhM')))
+        music_name_elements.pop()
+        return len(music_name_elements)
+        # Wait until the elements with author names are present
+        author_name_elements = WebDriverWait(driver, 10).until(EC.presence_of_all_elements_located((By.CLASS_NAME, 'ItemCard_autherName__gdrue')))
+        author_name_elements.pop()
+
+        driver.quit()
+        titles = []
+        for music_element in music_name_elements:
+            titles.append(music_element.text)
+        
+        authors = []
+        for author_name in author_name_elements:
+            authors.append(author_name.text)
+        
+        sounds = []
+        for title, author in zip(titles, authors):
+            sounds.append({"title": music_name, "author": author_name})
+        
+        return sounds
+
+    # Error Catching
+    except Exception as e:
+        print(f"An error occurred: {e}")
 
 async def get_ms_token():
     async with ClientSession() as session:
@@ -68,23 +106,3 @@ def load_sounds(driver):
     # view more songs
     driver.find_element(By.XPATH, '//*[@id="ccContentContainer"]/div[2]/div/div[2]/div[2]/div/div[1]/div').click()
     driver.implicitly_wait(10)
-
-def pull_sounds(driver):
-    sound_list_wrapper = driver.find_element(By.XPATH, '//*[@id="ccContentContainer"]/div[2]/div/div[2]/div[1]')
-    # sound_cards = sound_list_wrapper.find_elements(By.CLASS_NAME, 'CommonDataList_cardWrapper__kHTJP index-mobile_cardWrapper__Z2o_q')
-    
-    # sounds = []
-    # for sound_card in sound_cards:
-    #     title = sound_card.find_element(By.CLASS_NAME, 'ItemCard_musicName__2znhM index-mobile_musicName__4Srx_').text
-    #     author = sound_card.find_element(By.CLASS_NAME, 'ItemCard_autherName__gdrue index-mobile_autherName__DmQfn').text
-    #     sounds.append({"title":title, "author":author})
-    # return sounds
-    # child_elements = sound_list_wrapper.find_elements(By.XPATH, './*')
-    # for child in child_elements:
-    #     class_name = child.get_attribute('class')
-    #     text = child.text
-    #     print(f'Class: {class_name}, Text: {text}')
-    # return driver.find_element(By.XPATH, '//*[@id="ccContentContainer"]/div[2]/div/div[2]/div[1]/div[1]/div/div/div[2]/div[2]/div[1]/span').text
-
-
-

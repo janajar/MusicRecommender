@@ -49,24 +49,16 @@ def trending_sounds():
         # Wait until elements with music names are present
         music_name_elements = WebDriverWait(driver, 10).until(EC.presence_of_all_elements_located((By.CLASS_NAME, 'ItemCard_musicName__2znhM')))
         music_name_elements.pop()
-        return len(music_name_elements)
+
         # Wait until the elements with author names are present
         author_name_elements = WebDriverWait(driver, 10).until(EC.presence_of_all_elements_located((By.CLASS_NAME, 'ItemCard_autherName__gdrue')))
         author_name_elements.pop()
-
-        driver.quit()
-        titles = []
-        for music_element in music_name_elements:
-            titles.append(music_element.text)
-        
-        authors = []
-        for author_name in author_name_elements:
-            authors.append(author_name.text)
         
         sounds = []
-        for title, author in zip(titles, authors):
-            sounds.append({"title": music_name, "author": author_name})
+        for title, author in zip(music_name_elements, author_name_elements):
+            sounds.append({"title": title.text, "author": author.text})
         
+        driver.quit()
         return sounds
 
     # Error Catching

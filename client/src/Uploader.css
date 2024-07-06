@@ -1,0 +1,53 @@
+.video-upload-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 20px;
+    position: relative;
+}
+
+.video-upload-container.uploaded {
+    justify-content: flex-start;
+}
+
+.custom-file-input {
+    display: none;
+}
+
+.custom-file-label {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 200px; /* Adjusted width */
+    height: 350px; /* Adjusted height for portrait mode */
+    cursor: pointer;
+    background-color: #fff;
+    color: #007bff;
+    border-radius: 20px;
+    border: 2px solid #007bff;
+    transition: background-color 0.3s ease;
+    text-align: center;
+    position: relative; /* Changed to relative */
+    z-index: 1; /* Ensure it's above other content */
+}
+
+.custom-file-label:hover {
+    background-color: #f0f0f0;
+}
+
+.video-preview {
+    width: 200px; /* Adjusted the width */
+    height: 350px; /* Adjusted height for portrait mode */
+    border-radius: 10px;
+    object-fit: cover;
+    margin-left: 20px; /* Ensure it moves correctly */
+    transition: margin-left 0.3s ease; /* Smooth transition */
+}
+
+.video-upload-container.uploaded .custom-file-label {
+    display: none; /* Hide the upload box when video is uploaded */
+}
+
+.video-upload-container.uploaded .video-preview {
+    margin-left: -220px; /* Shift more to the left */
+}

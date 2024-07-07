@@ -1,17 +1,20 @@
-import React from 'react'
+import React from 'react';
 import './List.css';
 import ListCard from './ListCard.js';
 
-function List() {
+const List = ({ data }) => {
   return (
-    <div>
-        <ListCard /> 
-        <ListCard />
-        <ListCard />
-        <ListCard />
-        <ListCard />
+    <div className="list">
+      {data.map((item, index) => (
+        <ListCard 
+          key={index} 
+          title={item.title} 
+          author={item.author} 
+          downloadUrl={item.url} 
+        />
+      ))}
     </div>
   );
-}
+};
 
 export default List;

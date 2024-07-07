@@ -1,14 +1,14 @@
 const express = require('express');
 const multer = require('multer');
 const { spawn } = require('child_process');
-const path = require('path'); // Ensure path is imported
-const axios = require('axios'); // Import axios for making HTTP requests
+const path = require('path');
+const axios = require('axios');
 require('dotenv').config();
 
 const app = express();
 const PORT = process.env.PORT || 3001;
 const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
-const FLASK_SERVER_URL = 'http://localhost:5000/recommend-music';
+const FLASK_SERVER_URL = 'http://127.0.0.1:5000/recommend-music';
 
 if (!OPENAI_API_KEY) {
     console.error('OpenAI API key is not set in environment variables.');
@@ -55,7 +55,7 @@ app.post('/api/upload', upload.single('video'), async (req, res) => {
             console.log('Python script output:', output);
 
             try {
-                const response = await axios.post(FLASK_SERVER_URL, { output: output });
+                const response = await axios.post(FLASK_SERVER_URL, { hashtags: output });
                 console.log('Response from Flask server:', response.data);
                 res.json(response.data);
             } catch (error) {
@@ -64,7 +64,7 @@ app.post('/api/upload', upload.single('video'), async (req, res) => {
             }
         });
     } catch (error) {
-        console.error('Error processing video:', error.response ? error.response.data : error.message);
+        console.error('Error processing video:', error.message);
         if (!res.headersSent) {
             res.status(500).json({ message: 'Failed to process video', error: error.message });
         }

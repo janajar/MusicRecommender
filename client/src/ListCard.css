@@ -1,0 +1,24 @@
+.card {
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    padding: 16px;
+    margin: 16px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    background-color: #fff;
+  }
+  
+  .title {
+    font-size: 1.5em;
+    margin: 0 0 8px 0;
+  }
+  
+  .author {
+    font-size: 1em;
+    color: #555;
+    margin: 0 0 16px 0;
+  }
+  
+  .audio {
+    width: 100%;
+  }
+  

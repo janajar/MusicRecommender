@@ -3,12 +3,8 @@ import base64
 import os
 import sys
 import tempfile
-import time
 from dotenv import load_dotenv
 from openai import OpenAI
-import numpy as np
-from PIL import Image
-from io import BytesIO
 
 def extract_frames(video_stream, spf=2):
     try:

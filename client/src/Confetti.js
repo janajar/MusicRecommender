@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import ReactConfetti from 'react-confetti';
+import './Confetti.css'; // Make sure to import your CSS file
 
 const Confetti = () => {
     const [windowDimen, setDimension] = useState({ width: window.innerWidth, height: window.innerHeight });
@@ -16,7 +17,7 @@ const Confetti = () => {
     }, [windowDimen]);
 
     return (
-        <>
+        <div className="confetti-container">
             <ReactConfetti
                 width={windowDimen.width}
                 height={windowDimen.height}
@@ -25,7 +26,7 @@ const Confetti = () => {
                 colors={['#25f4ee', '#fe2c55', '#ffffff']}
                 tweenDuration={1000}
             />
-        </>
+        </div>
     );
 };
 

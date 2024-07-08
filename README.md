@@ -8,7 +8,6 @@ This project aims to recommend songs for TikTok videos by leveraging the power o
 
 - **Video Analysis with OpenAI**: Analyze the content of a TikTok video to generate relevant hashtags.
 - **TikTok Sound Recommendations**: Use the [Unofficial TikTok API](https://github.com/davidteather/TikTok-Api) to pull popular sounds based on the generated hashtags.
-- **Popular Sounds Scraping**: Scrape the [TikTok Creative Center](https://ads.tiktok.com/business/creativecenter/inspiration/popular/music/pc/en) to get the most popular sounds on TikTok.
 - **User-friendly Frontend**: Display recommended sounds on an easy-to-use frontend interface.
 
 ## Setup Instructions
@@ -34,12 +33,6 @@ This project aims to recommend songs for TikTok videos by leveraging the power o
     ```sh
     ./start_server.sh
     ```
-
-## Dependencies
-
-- **[OpenAI](https://platform.openai.com/docs/overview)**: For video content analysis and hashtag generation.
-- **[Unofficial TikTok API](https://github.com/davidteather/TikTok-Api)**: For fetching popular sounds based on hashtags.
-- **[TikTok Creative Center](https://ads.tiktok.com/business/creativecenter/inspiration/popular/music/pc/en)**: For scraping the most popular sounds on TikTok.
 
 ## Usage
 

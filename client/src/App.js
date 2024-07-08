@@ -38,10 +38,10 @@ function App() {
           videoSrc={videoSrc}
           onAnalysisComplete={handleAnalysisComplete}
         />
-        {(
+        {analysisResult && (
           <div>
             <h2>Personalized</h2>
-            <List data={items} />
+            <List data={analysisResult.personalized} />
           </div>
         )}
       </div>

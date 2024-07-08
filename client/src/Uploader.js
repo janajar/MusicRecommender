@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
-import vidButton from './img/vid-button.svg'; // Adjusted file extension
+import axios from 'axios';
+import vidButton from './img/vid-button.svg';
 import './App.css';
 
-const Uploader = ({ onUploadComplete, videoUploaded, videoSrc }) => {
+const Uploader = ({ onUploadComplete, videoUploaded, videoSrc, onAnalysisComplete }) => {
   const [dragging, setDragging] = useState(false);
   const [loading, setLoading] = useState(false);
 
@@ -33,10 +34,25 @@ const Uploader = ({ onUploadComplete, videoUploaded, videoSrc }) => {
     const videoFile = files[0];
     const videoURL = URL.createObjectURL(videoFile);
 
-    setTimeout(() => {
+    const formData = new FormData();
+    formData.append('video', videoFile);
+
+    axios.post('/api/upload', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    })
+    .then(response => {
+      console.log('File uploaded successfully:', response.data);
       onUploadComplete(videoURL);
+      onAnalysisComplete(response.data);
+    })
+    .catch(error => {
+      console.error('Error uploading file:', error);
+    })
+    .finally(() => {
       setLoading(false);
-    }, 2000); // Simulating loading delay
+    });
   };
 
   return (

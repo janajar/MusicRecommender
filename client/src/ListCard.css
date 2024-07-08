@@ -1,24 +1,73 @@
 .card {
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    padding: 16px;
-    margin: 16px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    background-color: #fff;
-  }
-  
-  .title {
-    font-size: 1.5em;
-    margin: 0 0 8px 0;
-  }
-  
-  .author {
-    font-size: 1em;
-    color: #555;
-    margin: 0 0 16px 0;
-  }
-  
-  .audio {
-    width: 100%;
-  }
-  
+  border: 0px solid #ffffff;
+  border-radius: 8px;
+  padding: 5px;
+  margin: 16px;
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+  width: 650px;  /* Adjust the width as needed */
+  height: 100px;  /* Adjust the height as needed */
+}
+
+.red-listcard {
+  background-image: url('./img/red-ListCard.svg');
+}
+
+.blue-listcard {
+  background-image: url('./img/blue-ListCard.svg');
+}
+
+.title {
+  font-family: 'proxima-nova', sans-serif;
+  font-weight: 800; /* Extrabold weight */
+  font-size: 1.5em;
+  margin: 0 0 2px 0;
+  margin-left: 40px;
+}
+
+.author {
+  font-family: 'proxima-nova', sans-serif;
+  font-weight: 800; /* Extrabold weight */
+  font-size: 1em;
+  color: #605e5e;
+  margin: 0 -0px 16px 0;
+  margin-left: 40px;
+}
+
+.audio-container {
+  border-radius: 8px;
+  padding: 10px;
+  margin-top: -20px; 
+  margin-left: 40px;
+}
+
+.audio {
+  width: 90%;
+  border: none;
+  outline: none;
+  background: transparent;
+  color: #000000;  /* You can change the color to match your design */
+  height: 20px; /* Adjust height as needed */
+}
+
+/* Style the audio slider */
+.audio::-webkit-media-controls-panel {
+  background: transparent;
+}
+
+.audio::-webkit-media-controls-mute-button,
+.audio::-webkit-media-controls-play-button,
+.audio::-webkit-media-controls-timeline,
+.audio::-webkit-media-controls-current-time-display,
+.audio::-webkit-media-controls-time-remaining-display,
+.audio::-webkit-media-controls-volume-slider {
+  color: #000000;
+  font-family: 'proxima-nova', sans-serif;
+  font-weight: 800; /* Extrabold weight */
+  font-size: 1.125em;
+}
+
+.audio::-webkit-media-controls-enclosure {
+  background: transparent;
+}

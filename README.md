@@ -45,3 +45,14 @@ Feel free to submit issues or pull requests if you have suggestions or improveme
 ---
 
 By following these instructions, you should be able to set up and run the song recommendation system for TikTok videos. If you encounter any issues or have questions, please open an issue on the repository. Enjoy your song recommendations!
+
+## Additional Resources
+
+Check our project on [Devpost](https://devpost.com/software/engagement-studio).
+
+## Demonstration Video
+
+Watch the video below to see a demonstration of the project:
+
+[![Watch the video](https://img.youtube.com/vi/f_17y8BlOB8/0.jpg)](https://www.youtube.com/watch?v=f_17y8BlOB8)
+
